@@ -25,39 +25,48 @@ const int INF = 1e9;
 const ll LINF = 1e17;
 
 vi graph[N];
-vvi up(N, vi(20, 0));
+vvi dp1(50010, vi(510, 0)), dp2(50010, vi(510, 0));
 
-void dfs(int v, int p) {
-    up[v][0] = p;
-    for (int i=1; i<20; i++) {
-        if (up[v][i-1] != -1) up[v][i] = up[up[v][i-1]][i-1];
-        else up[v][i] = -1;
-    }
+void dfs(int v, int p, int &k) {
     for (auto c: graph[v]) {
         if (c==p) continue;
-        dfs(c, v);
+        dfs(c, v, k);
+    }
+    dp1[v][0] = 1;
+    for (int i=1; i<=k; i++) {
+        for (auto c: graph[v]) {
+            if (c==p) continue;
+            dp1[v][i] += dp1[c][i-1];
+        }
     }
 }
 
-int ans_query(int v, int k) {
-    if (v==-1 or not k) return v;
-    for (int i=19; i>=0; i--) {
-        if (k >= (1<<i)) return ans_query(up[v][i], k - (1<<i));
+void solve(int v, int p, int &k) {
+    for (int i=0; i<=k; i++) dp2[v][i] = dp1[v][i];
+    if (p) {
+        dp2[v][1] += dp2[p][0];
+        for (int i=2; i<=k; i++) {
+            dp2[v][i] += dp2[p][i-1];
+            dp2[v][i] -= dp1[v][i-2];
+        }
+    }
+    for (auto c: graph[v]) {
+        if (c==p) continue;
+        solve(c, v, k);
     }
 }
 
 int main() {
-    int n, q; cin >> n >> q;
+    int n, k; cin >> n >> k;
     rep(i, 0, n-1) {
-        int u=i+2, v;
-        cin >> v;
+        int u, v;
+        cin >> u >> v;
         graph[u].pb(v);
         graph[v].pb(u);
     }
-    dfs(1, -1);
-    rep(i, 0, q) {
-        int u, k;
-        cin >> u >> k;
-        cout << ans_query(u, k) << endl;
-    }
+    dfs(1, 0, k);
+    solve(1, 0, k);
+    ll ans = 0;
+    for (int i=1; i<=n; i++) ans += dp2[i][k];
+    cout << ans/2;
 }

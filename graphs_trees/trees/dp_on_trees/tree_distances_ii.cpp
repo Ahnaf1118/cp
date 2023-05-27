@@ -5,8 +5,8 @@ using namespace std;
 #define S second
 #define pb push_back
 #define all(x) (x).begin(), (x).end()
-#define rep(i, a, b) for (int i=a; i<b; i++)
 #define fast_io ios::sync_with_stdio(false); cin.tie(NULL);
+#define rep(i, a, b) for (int i=a; i<b; i++)
 typedef long long ll;
 typedef pair<int, int> ii;
 typedef pair<int, ii> iii;
@@ -25,39 +25,34 @@ const int INF = 1e9;
 const ll LINF = 1e17;
 
 vi graph[N];
-vvi up(N, vi(20, 0));
+vll sz(N, 1ll), sa(N, 0ll), dp(N, 0ll);
 
 void dfs(int v, int p) {
-    up[v][0] = p;
-    for (int i=1; i<20; i++) {
-        if (up[v][i-1] != -1) up[v][i] = up[up[v][i-1]][i-1];
-        else up[v][i] = -1;
-    }
     for (auto c: graph[v]) {
         if (c==p) continue;
         dfs(c, v);
+        sz[v] += sz[c];
+        sa[v] += sz[c] + sa[c];
     }
 }
 
-int ans_query(int v, int k) {
-    if (v==-1 or not k) return v;
-    for (int i=19; i>=0; i--) {
-        if (k >= (1<<i)) return ans_query(up[v][i], k - (1<<i));
-    }
+void solve(int v, int p, ll par_ans, int n) {
+    dp[v] = sa[v] + par_ans + n - sz[v];
+    for (auto c: graph[v]) {
+        if (c==p) continue;
+        solve(c, v, dp[v] - sa[c] - sz[c], n);
+    } 
 }
 
 int main() {
-    int n, q; cin >> n >> q;
+    int n; cin >> n;
     rep(i, 0, n-1) {
-        int u=i+2, v;
-        cin >> v;
+        int u, v;
+        cin >> u >> v;
         graph[u].pb(v);
         graph[v].pb(u);
     }
-    dfs(1, -1);
-    rep(i, 0, q) {
-        int u, k;
-        cin >> u >> k;
-        cout << ans_query(u, k) << endl;
-    }
+    dfs(1, 0);
+    solve(1, 0, 0, n);
+    rep(i, 1, n+1) cout << dp[i] << ' '; 
 }
