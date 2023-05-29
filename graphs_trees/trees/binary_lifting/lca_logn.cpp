@@ -25,6 +25,7 @@ const int INF = 1e9;
 const ll LINF = 1e17;
 
 vi graph[N];
+vi depth(N, 0);
 vvi up(N, vi(20, 0));
 
 void dfs(int v, int p) {
@@ -34,15 +35,25 @@ void dfs(int v, int p) {
         else up[v][i] = -1;
     for (auto c: graph[v]) {
         if (c==p) continue;
+        depth[c] = depth[v]+1;
         dfs(c, v);
     }
 }
 
-int ans_query(int v, int k, int index=19) {
-    if (v==-1 or not k) return v;
-    for (int i=index; i>=0; i--) {
-        if (k >= (1<<i)) return ans_query(up[v][i], k-(1<<i), i);
+int ans_query(int u, int v) {
+    if (depth[u] < depth[v]) swap(u, v);
+    int k = depth[u] - depth[v];
+    for (int i=19; i>=0; i--) {
+        if (k >= (1<<i) and up[u][i] != -1) u = up[u][i], k -= (1<<i);
     }
+    if (u == v) return u;
+    for (int i=19; i>=0; i--) {
+        if (up[u][i] != up[v][i]) {
+            u = up[u][i];
+            v = up[v][i];
+        }
+    }
+    return up[u][0];
 }
 
 int main() {
@@ -55,8 +66,8 @@ int main() {
     }
     dfs(1, -1);
     rep(i, 0, q) {
-        int u, k;
-        cin >> u >> k;
-        cout << ans_query(u, k) << endl;
+        int u, v;
+        cin >> u >> v;
+        cout << ans_query(u, v) << endl;
     }
 }
