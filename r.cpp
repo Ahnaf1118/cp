@@ -26,5 +26,4 @@ const ll LINF = 1e17;
 
 int main() {
     fast_io;
-    
 }
