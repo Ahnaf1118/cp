@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-//greedy
 long getMaximumProfit(long *values, int n)
 {
     vector<long> slopes(n, 0);
