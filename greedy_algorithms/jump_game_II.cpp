@@ -9,6 +9,7 @@ public:
             int mx = 0;
             for (int i=left; i<=right; i++) mx = max(mx, i+nums[i]);
             left = right + 1;
+            if (mx <= right) return -1;
             right = mx;
             steps++;
         }
