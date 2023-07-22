@@ -5,6 +5,7 @@ using namespace std;
 #define S second
 #define pb push_back
 #define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
 #define rep(i, a, b) for (int i=a; i<b; i++)
 #define fast_io ios::sync_with_stdio(false); cin.tie(NULL);
 typedef long long ll;
