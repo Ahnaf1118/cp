@@ -34,6 +34,40 @@ public:
     }
 };
 
+class Solution{
+public:
+    bool check(string &s) {
+        for (int i=0; i<s.size()/2; i++) if (s[i] != s[s.size()-1-i]) return false;
+        return true;
+    }
+    int dfs(int index, int &n, string &s, vector<int> &dp) {
+        if (index == n) return 0;
+        if (dp[index] != -1) return dp[index];
+        int mn = 1e9;
+        for (int i=index; i<n; i++) {
+            string cur = s.substr(index, i-index+1);
+            if (not check(cur)) continue;
+            mn = min(mn, 1 + dfs(i+1, n, s, dp));
+        }
+        return dp[index] = mn;
+    }
+    int palindromicPartition(string s)
+    {
+        int n = s.size();
+        vector<int> dp(n+1, 0);
+        for (int i=n-1; i>=0; i--) {
+            int mn = 1e9;
+            for (int j=i; j<n; j++) {
+                string cur = s.substr(i, j-i+1);
+                if (not check(cur)) continue;
+                mn = min(mn, 1 + dp[j+1]);
+            }
+            dp[i] = mn;
+        }
+        return max(0, dp[0]-1);
+    }
+};
+
 //{ Driver Code Starts.
 
 int main(){
