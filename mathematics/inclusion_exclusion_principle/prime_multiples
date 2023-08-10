@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define endl '\n'
+#define F first
+#define S second
+#define pb push_back
+#define all(x) (x).begin(), (x).end()
+#define rall(x) (x).rbegin(), (x).rend()
+#define rep(i, a, b) for (int i=a; i<b; i++)
+#define fast_io ios::sync_with_stdio(false); cin.tie(NULL);
+typedef long long ll;
+typedef pair<int, int> ii;
+typedef pair<int, ii> iii;
+typedef vector<int> vi;
+typedef vector<bool> vb;
+typedef vector<char> vc;
+typedef vector<double> vd;
+typedef vector<string> vs;
+typedef vector<ll> vll;
+typedef vector<ii> vii;
+typedef vector<iii> viii;
+typedef vector<vi> vvi;
+typedef vector<vll> vvll;
+const int M = 1e9 + 7;
+const int N = 1e6 + 10;
+const int INF = 2e9;
+const ll LINF = 1e17;
+ 
+int main() {
+    fast_io;
+    ll n, k;
+    cin >> n >> k;
+    vll nums(k, 0); rep(i, 0, k) cin >> nums[i];
+    vll cnt(k+1, 0);
+    ll res = 0;
+    for (int mask = 0; mask<(1<<k); mask++) {
+        ll bits = 0, prod = n;
+        for (int pos = 0; pos<k; pos++) {
+            if (not (mask&(1<<pos))) continue;
+            prod /= nums[pos];
+            bits++;
+        }
+        cnt[bits] += prod;
+    }
+    for (int i=1; i<=k; i++) {
+        if (i&1) res += cnt[i];
+        else res -= cnt[i];
+    }
+    cout << res << endl;
+}
