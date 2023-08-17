@@ -3,6 +3,7 @@ using namespace std;
 #define endl '\n'
 #define F first
 #define S second
+#define sz size()
 #define pb push_back
 #define all(x) (x).begin(), (x).end()
 #define rall(x) (x).rbegin(), (x).rend()
